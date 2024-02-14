@@ -8,6 +8,7 @@ import {
   FormulaType,
   AutoFieldSubType,
   FieldType,
+  FormulaFieldMetadata,
 } from "@budibase/types"
 import tracer from "dd-trace"
 
@@ -41,6 +42,9 @@ export function fixAutoColumnSubType(
   return column
 }
 
+const isFormula = (schema: FieldSchema): schema is FormulaFieldMetadata =>
+  schema.type === FieldType.FORMULA
+
 /**
  * Looks through the rows provided and finds formulas - which it then processes.
  */
@@ -53,21 +57,39 @@ export function processFormulas<T extends Row | Row[]>(
     const numRows = Array.isArray(inputRows) ? inputRows.length : 1
     span?.addTags({ table_id: table._id, dynamic, numRows })
     const rows = Array.isArray(inputRows) ? inputRows : [inputRows]
-    if (rows) {
-      for (let [column, schema] of Object.entries(table.schema)) {
-        if (schema.type !== FieldType.FORMULA) {
-          continue
-        }
 
-        const isStatic = schema.formulaType === FormulaType.STATIC
+    const formulasColumns = Object.entries(table.schema)
+      .filter(([_, schema]) => isFormula(schema))
+      .filter(
+        (columnSchema): columnSchema is [string, FormulaFieldMetadata] => {
+          const [_, schema] = columnSchema
 
-        if (
-          schema.formula == null ||
-          (dynamic && isStatic) ||
-          (!dynamic && !isStatic)
-        ) {
-          continue
+          if (schema.type !== FieldType.FORMULA) {
+            return false
+          }
+
+          const isStatic = schema.formulaType === FormulaType.STATIC
+
+          if (
+            schema.formula == null ||
+            (dynamic && isStatic) ||
+            (!dynamic && !isStatic)
+          ) {
+            return false
+          }
+          return true
         }
+      )
+      .map(([column, schema]) => {
+        return {
+          columnName: column,
+          schema: schema,
+          isStatic: schema.formulaType === FormulaType.STATIC,
+        }
+      })
+
+    if (rows?.length && formulasColumns.length) {
+      for (let { columnName: column, schema, isStatic } of formulasColumns) {
         // iterate through rows and process formula
         for (let i = 0; i < rows.length; i++) {
           let row = rows[i]
