@@ -89,9 +89,9 @@ export function processFormulas<T extends Row | Row[]>(
       })
 
     if (rows?.length && formulasColumns.length) {
-      for (let { columnName: column, schema, isStatic } of formulasColumns) {
-        // iterate through rows and process formula
-        for (let i = 0; i < rows.length; i++) {
+      // iterate through rows and process formula
+      for (let i = 0; i < rows.length; i++) {
+        for (let { columnName: column, schema, isStatic } of formulasColumns) {
           let row = rows[i]
           let context = contextRows ? contextRows[i] : row
           let formula = schema.formula
