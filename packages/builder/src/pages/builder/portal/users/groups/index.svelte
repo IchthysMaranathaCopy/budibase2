@@ -116,7 +116,7 @@
             Add group
           </Button>
         {:else}
-          <ScimInfo text="Users are synced from your AD" />
+          <ScimInfo text="Groups synced externally" />
         {/if}
       {:else}
         <Button

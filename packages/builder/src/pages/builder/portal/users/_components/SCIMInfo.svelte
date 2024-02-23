@@ -11,6 +11,7 @@
     size={iconSize}
     background={"var(--spectrum-global-color-gray-500)"}
   />
+  <!-- TODO: background color by theme -->
   {text}
 </div>
 
