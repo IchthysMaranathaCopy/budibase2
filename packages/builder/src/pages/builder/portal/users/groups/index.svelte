@@ -116,7 +116,7 @@
             Add group
           </Button>
         {:else}
-          <ScimInfo text="Groups synced externally" />
+          <ScimInfo text="Group synced externally" />
         {/if}
       {:else}
         <Button
