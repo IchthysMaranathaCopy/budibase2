@@ -32,6 +32,15 @@
     width: 16px;
     height: 16px;
   }
+  .icon.size--XXS {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+  }
+  .icon.size--XXS :global(.spectrum-Icon) {
+    width: 8px;
+    height: 8px;
+  }
   .icon.size--S {
     width: 22px;
     height: 22px;
