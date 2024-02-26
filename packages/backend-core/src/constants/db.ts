@@ -25,7 +25,7 @@ export enum ViewName {
   AUTOMATION_LOGS = "automation_logs",
   ACCOUNT_BY_EMAIL = "account_by_email",
   PLATFORM_USERS_LOWERCASE = "platform_users_lowercase_2",
-  USER_BY_GROUP = "user_by_group",
+  USER_BY_GROUP = "user_by_group_2",
   APP_BACKUP_BY_TRIGGER = "by_trigger",
 }
 
