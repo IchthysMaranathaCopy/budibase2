@@ -1,5 +1,7 @@
 <script>
   import { Icon, Search, Layout } from "@budibase/bbui"
+  import ScimInfo from "../../pages/builder/portal/users/_components/SCIMInfo.svelte"
+
   import { createEventDispatcher } from "svelte"
 
   export let searchTerm = ""
@@ -71,13 +73,28 @@
           <div class="text">
             {item[labelKey]}
           </div>
-          {#if item.selected}
+
+          {#if !item.isScim}
+            {#if item.selected}
+              <div class="scim-synced">
+                <Icon
+                  color="var(--spectrum-global-color-blue-600);"
+                  name="Checkmark"
+                />
+                <div class="scim-icon">
+                  <ScimInfo iconSize="XXS" />
+                </div>
+              </div>
+            {/if}
+          {:else if item.selected}
             <div>
               <Icon
                 color="var(--spectrum-global-color-blue-600);"
                 name="Checkmark"
               />
             </div>
+          {:else}
+            <ScimInfo iconSize="XS" />
           {/if}
         </div>
       {/each}
@@ -126,5 +143,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .scim-synced {
+    position: relative;
+  }
+
+  .scim-icon {
+    position: absolute;
+    bottom: -4px;
+    right: 0;
   }
 </style>
