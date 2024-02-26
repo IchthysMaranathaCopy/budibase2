@@ -19,6 +19,7 @@
       return {
         ...item,
         selected: selected?.find(x => x === item._id) != null,
+        isScim: item.scimInfo?.isSync,
       }
     })
   }
@@ -37,6 +38,13 @@
     })
     return sortedList
   }
+
+  function onClick(item) {
+    if (item.isScim) {
+      return
+    }
+    dispatch(item.selected ? "deselect" : "select", item._id)
+  }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -49,10 +57,10 @@
     <div class="items">
       {#each sortedList as item}
         <div
-          on:click={() => {
-            dispatch(item.selected ? "deselect" : "select", item._id)
-          }}
+          on:click={() => onClick(item)}
           class="item"
+          class:disabled={item.isScim}
+          title={item.isScim && "weffrew"}
         >
           {#if iconComponent}
             <svelte:component
@@ -97,17 +105,21 @@
   .item {
     display: flex;
     justify-content: space-between;
-    cursor: pointer;
     padding: var(--spacing-s) var(--spacing-l);
     background: var(--spectrum-global-color-gray-50);
     transition: background 130ms ease-out;
     gap: var(--spacing-m);
     align-items: center;
   }
-  .item:hover {
+  .item:hover:not(.disabled) {
     background: var(--spectrum-global-color-gray-100);
     cursor: pointer;
   }
+
+  .disabled {
+    opacity: 0.5;
+  }
+
   .text {
     flex: 1 1 auto;
     width: 0;

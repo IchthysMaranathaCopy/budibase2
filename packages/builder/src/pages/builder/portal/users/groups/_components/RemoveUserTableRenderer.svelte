@@ -9,7 +9,7 @@
 
   $: isScim = row.scimInfo?.isSync
   $: disabled = !sdk.users.isAdmin($auth.user) || isScim
-  $: tooltip = isScim ? "User synced externally" : ""
+  $: tooltip = isScim && "User synced externally"
 
   const userContext = getContext("users")
 
