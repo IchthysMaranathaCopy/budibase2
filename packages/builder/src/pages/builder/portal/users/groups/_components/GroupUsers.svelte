@@ -9,10 +9,8 @@
   import { setContext } from "svelte"
 
   import RemoveUserTableRenderer from "../_components/RemoveUserTableRenderer.svelte"
-  import ScimInfo from "../../_components/SCIMInfo.svelte"
 
   export let groupId
-  export let readonly
 
   let emailSearch
   let fetchGroupUsers
@@ -33,15 +31,11 @@
     email: {
       width: "1fr",
     },
-    ...(readonly
-      ? {}
-      : {
-          _id: {
-            displayName: "",
-            width: "auto",
-            borderLeft: true,
-          },
-        }),
+    _id: {
+      displayName: "",
+      width: "auto",
+      borderLeft: true,
+    },
   }
   const customUserTableRenderers = [
     {
@@ -61,11 +55,7 @@
 </script>
 
 <div class="header">
-  {#if !readonly}
-    <EditUserPicker {groupId} onUsersUpdated={fetchGroupUsers.getInitialData} />
-  {:else}
-    <ScimInfo text="User synced externally" />
-  {/if}
+  <EditUserPicker {groupId} onUsersUpdated={fetchGroupUsers.getInitialData} />
 
   <div class="controls-right">
     <Search bind:value={emailSearch} placeholder="Search email" />

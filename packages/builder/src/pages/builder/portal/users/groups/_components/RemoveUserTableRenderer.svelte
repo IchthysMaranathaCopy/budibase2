@@ -5,6 +5,11 @@
   import { sdk } from "@budibase/shared-core"
 
   export let value
+  export let row
+
+  $: isScim = row.scimInfo?.isSync
+  $: disabled = !sdk.users.isAdmin($auth.user) || isScim
+  $: tooltip = isScim ? "User synced externally" : ""
 
   const userContext = getContext("users")
 
@@ -14,10 +19,6 @@
   }
 </script>
 
-<ActionButton
-  disabled={!sdk.users.isAdmin($auth.user)}
-  size="S"
-  on:click={onClick}
+<ActionButton {disabled} size="S" on:click={onClick} {tooltip}
+  >Remove</ActionButton
 >
-  Remove
-</ActionButton>
