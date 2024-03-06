@@ -1,7 +1,7 @@
 import env from "../environment"
 import { getRedisOptions } from "../redis/utils"
 import { JobQueue } from "./constants"
-import InMemoryQueue from "./inMemoryQueue"
+
 import BullQueue, { QueueOptions, JobOptions } from "bull"
 import { addListeners, StalledFn } from "./listeners"
 import { Duration } from "../utils"
@@ -13,7 +13,7 @@ const QUEUE_LOCK_MS = Duration.fromMinutes(5).toMs()
 const QUEUE_LOCK_RENEW_INTERNAL_MS = Duration.fromSeconds(30).toMs()
 // cleanup the queue every 60 seconds
 const CLEANUP_PERIOD_MS = Duration.fromSeconds(60).toMs()
-let QUEUES: BullQueue.Queue[] | InMemoryQueue[] = []
+let QUEUES: BullQueue.Queue[] = []
 let cleanupInterval: NodeJS.Timeout
 
 async function cleanup() {
@@ -42,12 +42,9 @@ export function createQueue<T>(
   if (opts.jobOptions) {
     queueConfig.defaultJobOptions = opts.jobOptions
   }
-  let queue: any
-  if (!env.isTest()) {
-    queue = new BullQueue(jobQueue, queueConfig)
-  } else {
-    queue = new InMemoryQueue(jobQueue, queueConfig)
-  }
+
+  const queue = new BullQueue(jobQueue, queueConfig)
+
   addListeners(queue, jobQueue, opts?.removeStalledCb)
   QUEUES.push(queue)
   if (!cleanupInterval && !env.isTest()) {
