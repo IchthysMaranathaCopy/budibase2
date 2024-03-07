@@ -41,8 +41,6 @@ jobs:
         uses: docker/setup-buildx-action@v1
       - name: Run Yarn
         run: yarn
-      - name: Run Yarn Bootstrap
-        run: yarn bootstrap
       - name: Run Yarn Build
         run: yarn build:docker:pre
       - name: Login to Docker Hub
