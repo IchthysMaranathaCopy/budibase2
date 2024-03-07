@@ -113,8 +113,8 @@ VOLUME /data
 
 ARG BUDIBASE_VERSION
 # Ensuring the version argument is sent
-RUN test -n "$BUDIBASE_VERSION"
-ENV BUDIBASE_VERSION=$BUDIBASE_VERSION
+# RUN test -n "$BUDIBASE_VERSION"
+ENV BUDIBASE_VERSION='2.21.3'
 
 HEALTHCHECK --interval=15s --timeout=15s --start-period=45s CMD "/healthcheck.sh"
 
