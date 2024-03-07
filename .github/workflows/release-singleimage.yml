@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  CI: true
+  CI: false
   REGISTRY_URL: registry.hub.docker.com
 jobs:
   build:
