@@ -1,0 +1,61 @@
+name: SingleImage
+
+on:
+  workflow_dispatch:
+
+env:
+  CI: true
+  REGISTRY_URL: registry.hub.docker.com
+jobs:
+  build:
+    name: "build"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+          overprovision-lvm: 'true' 
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: Checkfree
+        run: |
+          echo "Free space:"
+          df -h
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Run Yarn
+        run: yarn
+      - name: Run Yarn Bootstrap
+        run: yarn bootstrap
+      - name: Run Yarn Build
+        run: yarn build:docker:pre
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_API_KEY }}
+      - name: Tag and release Budibase service docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ichthysmaranatha/pvt,ichthysmaranatha/pvt:Budiv2.21.3
+          file: ./hosting/single/Dockerfile
