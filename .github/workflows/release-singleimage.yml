@@ -64,7 +64,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: BUDIBASE_VERSION=${{ env.BUDIBASE_VERSION }}
-          tags: budibase/budibase,budibase/budibase:${{ env.RELEASE_VERSION }}
+          tags: ichthysmaranatha/pvt,ichthysmaranatha/pvt:${{ env.RELEASE_VERSION }}
           file: ./hosting/single/Dockerfile.v2
         env:
           BUDIBASE_VERSION: ${{ env.RELEASE_VERSION }}
